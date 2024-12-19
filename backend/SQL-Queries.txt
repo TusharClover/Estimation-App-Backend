@@ -1,0 +1,204 @@
+CREATE DATABASE estimation_db;
+
+CREATE TABLE development_efforts (
+    id INT PRIMARY KEY AUTO_INCREMENT,        
+    task_name VARCHAR(255) NOT NULL,          
+    complexity VARCHAR(50),                  
+    count INT,                      
+    unit_efforts FLOAT,                      
+    estimated_efforts FLOAT,                 
+    estimation_id INT,                       
+    FOREIGN KEY (estimation_id) REFERENCES estimations(id)
+);
+
+CREATE TABLE projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_name VARCHAR(255) NOT NULL,
+    project_name VARCHAR(255) NOT NULL,
+    received_on DATE NOT NULL,
+    prepared_by VARCHAR(255),
+    reviewed_by VARCHAR(255),
+    technology VARCHAR(255),
+    unit_of_estimation VARCHAR(50),
+    currency_of_revenue VARCHAR(10),
+    userid INT,
+    FOREIGN KEY (userid) REFERENCES users(id)  -- Foreign key now references 'id' from users table
+);
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+INSERT INTO users (employee_id, password)
+VALUES ('CI9807', 'dGVzdEAxMjM=');
+
+
+CREATE TABLE estimations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_name VARCHAR(255) NOT NULL,
+    project_name VARCHAR(255) NOT NULL,
+    received_on DATE NOT NULL,
+    prepared_by VARCHAR(255),
+    reviewed_by VARCHAR(255),
+    technology VARCHAR(255),
+    unit_of_estimation VARCHAR(50),
+    currency_of_revenue VARCHAR(10),
+    userid INT,
+    FOREIGN KEY (userid) REFERENCES users(id)  -- Foreign key now references 'id' from users table
+);
+
+CREATE TABLE project_phases (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    phase_name VARCHAR(255),
+    default_percentage FLOAT
+);
+
+INSERT INTO project_phases (phase_name, default_percentage)
+VALUES
+('Requirement Analysis', 9),
+('Solution Design', 13),
+('Install & Configuration', 40),
+('Integrated Testing', 15),
+('Training', 9),
+('Acceptance Testing', 4),
+('Documentation', 5),
+('Go-Live', 5);
+
+
+CREATE TABLE estimation_project_phases (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    efforts FLOAT, 
+    default_percentage FLOAT, 
+    actual_percentage FLOAT, 
+    phase_name VARCHAR(255),
+    project_phase_id INT, 
+    estimation_id INT,    
+    FOREIGN KEY (project_phase_id) REFERENCES project_phases(id),
+    FOREIGN KEY (estimation_id) REFERENCES estimations(id)
+);
+
+CREATE TABLE complexity (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    level_of_complexity VARCHAR(50) NOT NULL
+);
+
+INSERT INTO complexity (level_of_complexity) VALUES
+('Low'),
+('Medium'),
+('Complex'),
+('Very Complex');
+
+CREATE TABLE profiles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    profile_name VARCHAR(100) NOT NULL,
+    level_of_experience VARCHAR(50) NOT NULL
+);
+
+INSERT INTO profiles (level_of_experience, profile_name) VALUES
+('0-2 yrs', 'Java Jr Developer (0-2 yrs)'),
+('3-4 yrs', 'Java Sr Developer (3-4 yrs)'),
+('4-6 yrs', 'Java Tech Lead (4-6 yrs)'),
+('8+ yrs', 'Java PM (8+ yrs)'),
+('0-2 yrs', 'WebCenter Jr Developer (0-2 yrs)'),
+('2-3 yrs', 'WebCenter Developer (2-3 yrs)'),
+('3-4 yrs', 'WebCenter Sr Developer (3-4 yrs)'),
+('4-6 yrs', 'WebCenter Lead (4-6 yrs)'),
+('8+ yrs', 'WebCenter Project Manager (8+ yrs)'),
+('2-3 yrs', 'WebCenter Web Designer (2-3 yrs)'),
+('2-3 yrs', 'WebCenter Trainers (2-3 yrs)'),
+('2-3 yrs', 'WebCenter Test Lead (2-3 yrs)'),
+('2-3 yrs', 'WebCenter Tester (2-3 yrs)'),
+('2-3 yrs', 'WebCenter Tech Writer (2-3 yrs)'),
+('0-2 yrs', 'DotNet Jr Developer (0-2 yrs)'),
+('3-4 yrs', 'DotNet Sr Developer (3-4 yrs)'),
+('4-6 yrs', 'DotNet Tech Lead (4-6 yrs)'),
+('8+ yrs', 'DotNet PM (8+ yrs)'),
+('0-2 yrs', 'EBS Jr Developer (0-2 yrs)'),
+('2-3 yrs', 'EBS Jr Developer (2-3 yrs)'),
+('3-4 yrs', 'EBS Sr Developer (3-4 yrs)'),
+('4-6 yrs', 'EBS Tech Lead (4-6 yrs)'),
+('8+ yrs', 'EBS PM (8+ yrs)');
+
+CREATE TABLE sites (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+
+INSERT INTO sites (name) VALUES
+('Onsite'),
+('Offshore'),
+('Client Site');
+
+CREATE TABLE estimation_proposed_schedules (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    phase_name VARCHAR(255) NOT NULL,
+    phase_id INT, -- Foreign key to project_phases table
+    site_id INT, -- Foreign key to sites table
+    site_name VARCHAR(255), 
+    profile_id INT, -- Foreign key to profiles table
+    profile_name VARCHAR(255), 
+    schedule_order INT DEFAULT 1,
+    estimation_id INT, -- Foreign key to estimations table
+
+    -- Foreign key constraints
+    FOREIGN KEY (phase_id) REFERENCES project_phases(id),
+    FOREIGN KEY (site_id) REFERENCES sites(id),
+    FOREIGN KEY (profile_id) REFERENCES profiles(id),
+    FOREIGN KEY (estimation_id) REFERENCES estimations(id)
+);
+
+CREATE TABLE weeks (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    days_count INT NOT NULL,
+    week_order INT NOT NULL,
+    estimation_id INT, -- Foreign key from estimations table
+    proposed_schedule_id INT, -- Foreign key from estimation_proposed_schedules table
+
+    -- Foreign key constraints
+    FOREIGN KEY (estimation_id) REFERENCES estimations(id),
+    FOREIGN KEY (proposed_schedule_id) REFERENCES estimation_proposed_schedules(id)
+);
+
+CREATE TABLE rate_card (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    level VARCHAR(255) NOT NULL,
+    tech_role VARCHAR(255) NOT NULL,
+    ctc_pm DECIMAL(12, 2) NOT NULL,
+    loaded_ctc DECIMAL(12, 2) NOT NULL,
+    site_id INT, -- Foreign Key Reference to 'sites' table
+    site VARCHAR(255) NOT NULL,
+    profile_id INT, -- Foreign Key Reference to 'profiles' table
+    infra_cost DECIMAL(12, 2) NOT NULL,
+    loaded_cost DECIMAL(12, 2) NOT NULL,
+    margin DECIMAL(12, 2) NOT NULL,
+    rate_pm DECIMAL(12, 2) NOT NULL,
+    rate_pd DECIMAL(12, 2) NOT NULL,
+    approx_distribution VARCHAR(255),
+    weighted_rate DECIMAL(12, 2) NOT NULL,
+    cost_pd DECIMAL(12, 2) NOT NULL,
+    FOREIGN KEY (site_id) REFERENCES sites(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+INSERT INTO rate_card (
+    level, 
+    tech_role, 
+    ctc_pm, 
+    loaded_ctc, 
+    site, 
+    infra_cost, 
+    loaded_cost, 
+    margin, 
+    rate_pm, 
+    rate_pd, 
+    approx_distribution, 
+    weighted_rate, 
+    cost_pd,
+    site_id,
+    profile_id
+) VALUES
+('0-2 yrs', 'Java Jr Developer (0-2 yrs)', 25000, 32500, 'Onsite', 1000, 33500, 50, 66000, 3300, NULL, 1675, 1675, 1, 1),
+('0-2 yrs', 'Java Jr Developer (0-2 yrs)', 25000, 32500, 'Offshore', 10000, 42500, 50, 75000, 3750, 50, 1875, 2125, 2, 1),
+('0-2 yrs', 'Java Jr Developer (0-2 yrs)', 25000, 32500, 'Client Site', 0, 32500, 50, 65000, 3250, 50, 1625, 1625, 3, 1);
