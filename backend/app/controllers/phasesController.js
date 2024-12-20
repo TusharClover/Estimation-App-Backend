@@ -34,10 +34,10 @@ const getAllPhases = async(req, res) => {
             const result = await Phases.getAllPhases(req.params);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
-                res.status(200).send({ message: 'Phases fetch successfully!', result: result });
+                return res.status(200).send({ message: 'Phases fetch successfully!', result: result, success: true });
             } else {
                 // logger.error('Failed to get Estimation');
-                res.status(404).send({ error: 'Failed to get Phases' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             // console.log('inside catch');
@@ -66,25 +66,26 @@ const getAllPhases = async(req, res) => {
                         // logger.info('Employee fetch successfully! with a new access token!');
                         return res.status(200).send({
                             message: 'Phases fetch successfully! with a new access token!',
-                            result: result
+                            result: result,
+                            success: true
                         });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No Phases found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
                     // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
         // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
@@ -116,10 +117,10 @@ const getPhasesByEstimationId = async(req, res) => {
             const result = await Phases.getPhasesByEstimationId(req.params);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
-                res.status(200).send({ message: 'Phases fetch successfully!', result: result });
+                res.status(200).send({ message: 'Phases fetch successfully!', result: result, success: true });
             } else {
                 // logger.error('Failed to get Estimation');
-                res.status(404).send({ error: 'Failed to get Phases' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             // console.log('inside catch');
@@ -148,25 +149,26 @@ const getPhasesByEstimationId = async(req, res) => {
                         // logger.info('Employee fetch successfully! with a new access token!');
                         return res.status(200).send({
                             message: 'Phases fetch successfully! with a new access token!',
-                            result: result
+                            result: result,
+                            success: true
                         });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No Phases found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
                     // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
         // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
@@ -201,10 +203,10 @@ const createPhasesForEstimation = async(req, res) => {
             const result = await Phases.createPhasesForEstimation(req.body);
             if (result) {
                 // logger.info('Estimations created successfully!');
-                res.status(200).send({ message: 'Phases created successfully!', result: result[0] });
+                res.status(200).send({ message: 'Phases created successfully!', result: result[0], success: true });
             } else {
                 // logger.error('Failed to create Estimations');
-                res.status(404).send({ error: 'Failed to create Phases' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             if (err.name === 'TokenExpiredError') {
@@ -224,27 +226,27 @@ const createPhasesForEstimation = async(req, res) => {
                     const result = await Phases.createPhasesForEstimation(req.body);
                     if (result) {
                         // logger.info('Estimations created successfully! with a new access token!');
-                        return res.status(200).send({ message: 'Phases created successfully! with a new access token!', result: result[0] });
+                        return res.status(200).send({ message: 'Phases created successfully! with a new access token!', result: result[0], success: true });
                     } else {
                         // logger.error('No Estimations found');
-                        return res.status(404).send({ error: 'No Phases found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
                     // console.log(refreshErr);
                     // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // console.log(err);
                 // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
 
     } else {
         // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 
 };

@@ -19,7 +19,7 @@ const createEstimation = async(req, res) => {
         const refreshToken = headersArr[1].split(' ')[2];
 
         if (!accessToken) {
-            return res.status(404).send({ error: 'Please check token' });
+            return res.status(404).send({ error: 'Please check access token' });
         }
 
         try {
@@ -28,20 +28,20 @@ const createEstimation = async(req, res) => {
 
             // Check if the user is valid
             if (!authData.user) {
-                return res.status(404).send({ error: 'Please check token' });
+                return res.status(404).send({ error: 'User is not authenticated' });
             }
 
             // If verification succeeds, proceed to get employees
             const result = await Estimations.createEstimation(req.body);
             if (result) {
-                res.status(200).send({ message: 'Estimations created successfully!', result: result.insertId ? true : false });
+                return res.status(200).send({ message: 'Estimations created successfully!', result: result.insertId ? true : false, success: true });
             } else {
-                res.status(200).send({ error: 'Something went wrong, please check data properly' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             if (err.name === 'TokenExpiredError') {
                 if (!refreshToken) {
-                    return res.status(404).send({ error: 'Please check token' });
+                    return res.status(404).send({ error: 'Please check refresh token' });
                 }
 
                 try {
@@ -50,24 +50,26 @@ const createEstimation = async(req, res) => {
 
                     // Check if the user is valid
                     if (!authData.user) {
-                        return res.status(404).send({ error: 'Please check token' });
+                        return res.status(404).send({ error: 'User is not authenticated' });
                     }
 
                     const result = await Estimations.createEstimation(req.body);
                     if (result) {
-                        return res.status(200).send({ message: 'Estimations created successfully! with a new access token!', result: result.insertId ? true : false });
+                        return res.status(200).send({ message: 'Estimations created successfully!', result: result.insertId ? true : false, success: true });
                     } else {
-                        return res.status(200).send({ error: 'Something went wrong, please check data properly' });
+                        console.log(result);
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    return res.status(404).send({ error: 'Please check token' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
-                return res.status(404).send({ error: 'Please check token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
     } else {
-        return res.status(404).send({ error: 'Please check token' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
@@ -85,7 +87,7 @@ const getEstimationsByUserId = async(req, res) => {
 
         if (!accessToken) {
             console.log('No access token provided');
-            return res.status(404).send({ error: 'No access token provided' });
+            return res.status(404).send({ error: 'Please check access token' });
         }
         try {
             // Verify access token
@@ -94,23 +96,23 @@ const getEstimationsByUserId = async(req, res) => {
             // Check if the user is valid
             if (!authData.user) {
                 console.log('User not authorized');
-                return res.status(404).send({ error: 'User not authorized' });
+                return res.status(404).send({ error: 'User is not authenticated' });
             }
 
             const result = await Estimations.getEstimationsByUserId(req.params);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
-                res.status(200).send({ message: 'Estimation fetch successfully!', result: result });
+                res.status(200).send({ message: 'Estimation fetch successfully!', result: result, success: true });
             } else {
                 // logger.error('Failed to get Estimation');
-                res.status(404).send({ error: 'Failed to get Estimation' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             console.log('inside catch', err);
             if (err.name === 'TokenExpiredError') {
                 if (!refreshToken) {
                     console.log('No refresh token provided');
-                    return res.status(404).send({ error: 'No refresh token provided' });
+                    return res.status(404).send({ error: 'Please check refresh token' });
                 }
 
                 try { // Verify the refresh token
@@ -119,7 +121,7 @@ const getEstimationsByUserId = async(req, res) => {
                     // Check if the user is valid
                     if (!authData.user) {
                         // logger.error('User not authorized');
-                        return res.status(404).send({ error: 'User not authorized' });
+                        return res.status(404).send({ error: 'User is not authenticated' });
                     }
 
                     // console.log(authData);
@@ -132,25 +134,24 @@ const getEstimationsByUserId = async(req, res) => {
                         // logger.info('Employee fetch successfully! with a new access token!');
                         return res.status(200).send({
                             message: 'Estimation fetch successfully! with a new access token!',
-                            result: result
+                            result: result,
+                            success: true
                         });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No estimation found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    console.log('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token Step 3' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
-                console.log('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token,Step 2' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
-        console.log('No access token provided,Step 1');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
@@ -167,7 +168,7 @@ const getEstimationsById = async(req, res) => {
 
         if (!accessToken) {
             // logger.error('No access token provided');
-            return res.status(404).send({ error: 'No access token provided' });
+            return res.status(404).send({ error: 'Please check access token' });
         }
         try {
             // Verify access token
@@ -176,23 +177,23 @@ const getEstimationsById = async(req, res) => {
             // Check if the user is valid
             if (!authData.user) {
                 // logger.error('User not authorized');
-                return res.status(404).send({ error: 'User not authorized' });
+                return res.status(404).send({ error: 'User is not authenticated' });
             }
 
             const result = await Estimations.getEstimationsById(req.params);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
-                res.status(200).send({ message: 'Estimation fetch successfully!', result: result[0] });
+                res.status(200).send({ message: 'Estimation fetch successfully!', result: result[0], success: true });
             } else {
                 // logger.error('Failed to get Estimation');
-                res.status(404).send({ error: 'Failed to get Estimation' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             // console.log('inside catch');
             if (err.name === 'TokenExpiredError') {
                 if (!refreshToken) {
                     // logger.error('No refresh token provided');
-                    return res.status(404).send({ error: 'No refresh token provided' });
+                    return res.status(404).send({ error: 'Please check refresh token' });
                 }
 
                 try { // Verify the refresh token
@@ -201,7 +202,7 @@ const getEstimationsById = async(req, res) => {
                     // Check if the user is valid
                     if (!authData.user) {
                         // logger.error('User not authorized');
-                        return res.status(404).send({ error: 'User not authorized' });
+                        return res.status(404).send({ error: 'User is not authenticated' });
                     }
 
                     // console.log(authData);
@@ -214,25 +215,25 @@ const getEstimationsById = async(req, res) => {
                         // logger.info('Employee fetch successfully! with a new access token!');
                         return res.status(200).send({
                             message: 'Estimation fetch successfully! with a new access token!',
-                            result: result[0]
+                            result: result[0],
+                            success: true
                         });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No estimation found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
-        // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
@@ -252,7 +253,7 @@ const updateEstimationById = async(req, res) => {
 
         if (!accessToken) {
             console.log('No access token provided');
-            return res.status(404).send({ error: 'No access token provided' });
+            return res.status(404).send({ error: 'Please check access token' });
         }
 
 
@@ -263,24 +264,24 @@ const updateEstimationById = async(req, res) => {
             // Check if the user is valid
             if (!authData.user) {
                 console.log('User not authorized');
-                return res.status(404).send({ error: 'User not authorized' });
+                return res.status(404).send({ error: 'User is not authenticated' });
             }
             // If verification succeeds, proceed to get employees
             const result = await Estimations.updateEstimationById(req);
             console.log(result, "Result");
             if (result) {
                 // logger.info('Employee fetch successfully!');
-                res.status(200).send({ message: 'Estimations fetch successfully!', result: result[0] });
+                res.status(200).send({ message: 'Estimations fetch successfully!', result: result[0], success: true });
             } else {
                 // logger.error('Failed to create employee');
-                res.status(404).send({ error: 'Failed to create Estimations' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             console.log(err.name, "Error Name");
             if (err.name === 'TokenExpiredError') {
                 if (!refreshToken) {
                     console.log('No refresh token provided');
-                    return res.status(404).send({ error: 'No refresh token provided' });
+                    return res.status(404).send({ error: 'Please check refresh token' });
                 }
 
                 try { // Verify the refresh token
@@ -289,32 +290,28 @@ const updateEstimationById = async(req, res) => {
                     // Check if the user is valid
                     if (!authData.user) {
                         // logger.error('User not authorized');
-                        return res.status(404).send({ error: 'User not authorized' });
+                        return res.status(404).send({ error: 'User is not authenticated' });
                     }
                     const result = await Estimations.updateEstimationById(req);
                     console.log(result, "error");
                     if (result) {
                         // logger.info('Employee fetch successfully! with a new access token!');
-                        return res.status(200).send({ message: 'Estimations fetch successfully! with a new access token!', result: result[0] });
+                        return res.status(200).send({ message: 'Estimations fetch successfully! with a new access token!', result: result[0], success: true });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No Estimations found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    console.log(refreshErr);
-                    console.log('Invalid refresh token2');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
-                console.log(err);
-                console.log('Invalid access token1');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
-        console.log('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 module.exports = { createEstimation, getEstimationsByUserId, getEstimationsById, updateEstimationById };

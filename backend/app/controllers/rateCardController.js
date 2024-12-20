@@ -34,10 +34,10 @@ const getAllRateCard = async(req, res) => {
             const result = await RateCard.getAllRateCard(req.params);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
-                res.status(200).send({ message: 'RateCard fetch successfully!', result: result });
+                res.status(200).send({ message: 'RateCard fetch successfully!', result: result, success: true });
             } else {
                 // logger.error('Failed to get Estimation');
-                res.status(404).send({ error: 'Failed to get RateCard' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             // console.log('inside catch');
@@ -66,37 +66,106 @@ const getAllRateCard = async(req, res) => {
                         // logger.info('Employee fetch successfully! with a new access token!');
                         return res.status(200).send({
                             message: 'RateCard fetch successfully! with a new access token!',
-                            result: result
+                            result: result,
+                            success: true
                         });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No RateCard found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
                     // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
         // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
 const getAllRateCardByEstId = async(req, res) => {
-    const result = await RateCard.getAllRateCardByEstId(req.params);
-    if (result) {
-        // logger.info('Estimation fetch successfully!');
-        res.status(200).send({ message: 'RateCard fetch successfully!', result: result });
+    // console.log(req);
+    const header = req.headers['authorization'];
+    if (header) {
+        const headersArr = header.split(',');
+
+        // console.log(headersArr);
+
+        const accessToken = headersArr[0].split(' ')[1];
+        const refreshToken = headersArr[1].split(' ')[2];
+
+        if (!accessToken) {
+            // logger.error('No access token provided');
+            return res.status(404).send({ error: 'No access token provided' });
+        }
+        try {
+            // Verify access token
+            const authData = jwt.verify(accessToken, secretKey);
+
+            // Check if the user is valid
+            if (!authData.user) {
+                // logger.error('User not authorized');
+                return res.status(404).send({ error: 'User not authorized' });
+            }
+
+            const result = await RateCard.getAllRateCardByEstId(req.params);
+            if (result) {
+                // logger.info('Estimation fetch successfully!');
+                res.status(200).send({ message: 'RateCard fetch successfully!', result: result, success: true });
+            } else {
+                // logger.error('Failed to get Estimation');
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+            }
+        } catch (err) {
+            // console.log('inside catch');
+            if (err.name === 'TokenExpiredError') {
+                if (!refreshToken) {
+                    // logger.error('No refresh token provided');
+                    return res.status(404).send({ error: 'No refresh token provided' });
+                }
+
+                try { // Verify the refresh token
+                    const authData = jwt.verify(refreshToken, refreshSecretKey);
+
+                    // Check if the user is valid
+                    if (!authData.user) {
+                        // logger.error('User not authorized');
+                        return res.status(404).send({ error: 'User not authorized' });
+                    }
+
+                    // console.log(authData);
+
+                    const result = await RateCard.getAllRateCardByEstId(req.params);
+                    if (result) {
+                        // logger.info('Estimation fetch successfully!');
+                        res.status(200).send({ message: 'RateCard fetch successfully!', result: result, success: true });
+                    } else {
+                        // logger.error('Failed to get Estimation');
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+                    }
+
+                } catch (refreshErr) {
+                    // logger.error('Invalid refresh token');
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+                }
+            } else {
+                // logger.error('Invalid access token');
+                return res.status(404).send({ error: 'Please check token, token got expired' });
+            }
+        }
+
     } else {
-        // logger.error('Failed to get Estimation');
-        res.status(404).send({ error: 'Failed to get RateCard' });
+        // logger.error('No access token provided');
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
+
+
 
 };
 

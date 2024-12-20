@@ -37,10 +37,10 @@ const createDevEfforts = async(req, res) => {
             const result = await DevEfforts.createDevEfforts(req.body);
             if (result) {
                 // logger.info('Estimations created successfully!');
-                res.status(200).send({ message: 'Dev Efforts created successfully!', result: result[0] });
+                res.status(200).send({ message: 'Dev Efforts created successfully!', result: result[0], success: true });
             } else {
                 // logger.error('Failed to create Estimations');
-                res.status(404).send({ error: 'Failed to create Dev Efforts' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             if (err.name === 'TokenExpiredError') {
@@ -60,27 +60,26 @@ const createDevEfforts = async(req, res) => {
                     const result = await DevEfforts.createDevEfforts(req.body);
                     if (result) {
                         // logger.info('Estimations created successfully! with a new access token!');
-                        return res.status(200).send({ message: 'Dev Efforts created successfully! with a new access token!', result: result[0] });
+                        return res.status(200).send({ message: 'Dev Efforts created successfully! with a new access token!', result: result[0], success: true });
                     } else {
                         // logger.error('No Estimations found');
-                        return res.status(404).send({ error: 'No Dev Efforts found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    // console.log(refreshErr);
-                    // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // console.log(err);
                 // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
 
     } else {
         // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 
 };
@@ -113,10 +112,10 @@ const getDevEffortsById = async(req, res) => {
             const result = await DevEfforts.getDevEffortsById(req.params);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
-                res.status(200).send({ message: 'DevEfforts fetch successfully!', result: result });
+                res.status(200).send({ message: 'DevEfforts fetch successfully!', result: result, success: true });
             } else {
                 // logger.error('Failed to get Estimation');
-                res.status(404).send({ error: 'Failed to get DevEfforts' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             // console.log('inside catch');
@@ -145,25 +144,26 @@ const getDevEffortsById = async(req, res) => {
                         // logger.info('Employee fetch successfully! with a new access token!');
                         return res.status(200).send({
                             message: 'DevEfforts fetch successfully! with a new access token!',
-                            result: result
+                            result: result,
+                            success: true
                         });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No DevEfforts found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
         // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
@@ -195,10 +195,10 @@ const deleteDevEffortById = async(req, res) => {
             const result = await DevEfforts.deleteDevEffortById(req.params);
             if (result) {
                 console.log('DevEfforts delete successfully!');
-                res.status(200).send({ message: 'DevEfforts delete successfully!', result: result[0] });
+                res.status(200).send({ message: 'DevEfforts delete successfully!', result: result[0], success: true });
             } else {
                 console.log('Failed to delete DevEfforts');
-                res.status(404).send({ error: 'Failed to delete DevEfforts' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             if (err.name === 'TokenExpiredError') {
@@ -218,27 +218,26 @@ const deleteDevEffortById = async(req, res) => {
                     const result = await DevEfforts.deleteDevEffortById(req.params);
                     if (result) {
                         console.log('DevEfforts delete successfully! with a new access token!');
-                        return res.status(200).send({ message: 'DevEfforts delete successfully! with a new access token!', result: result[0] });
+                        return res.status(200).send({ message: 'DevEfforts delete successfully! with a new access token!', result: result[0], success: true });
                     } else {
                         console.log('No DevEfforts found');
-                        return res.status(404).send({ error: 'No DevEfforts found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    // console.log(refreshErr);
-                    console.log('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // console.log(err);
                 console.log('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
 
     } else {
         console.log('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
@@ -276,10 +275,10 @@ const updateDevEffortById = async(req, res) => {
             console.log(result, "Result");
             if (result) {
                 // logger.info('Employee fetch successfully!');
-                res.status(200).send({ message: 'DevEfforts fetch successfully!', result: result[0] });
+                res.status(200).send({ message: 'DevEfforts fetch successfully!', result: result[0], success: true });
             } else {
                 // logger.error('Failed to create employee');
-                res.status(404).send({ error: 'Failed to create DevEfforts' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             console.log(err.name, "Error Name");
@@ -301,26 +300,25 @@ const updateDevEffortById = async(req, res) => {
                     console.log(result, "error");
                     if (result) {
                         // logger.info('Employee fetch successfully! with a new access token!');
-                        return res.status(200).send({ message: 'DevEfforts fetch successfully! with a new access token!', result: result[0] });
+                        return res.status(200).send({ message: 'DevEfforts fetch successfully! with a new access token!', result: result[0], success: true });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No DevEfforts found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    console.log(refreshErr);
-                    console.log('Invalid refresh token2');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 console.log(err);
                 console.log('Invalid access token1');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
         console.log('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
@@ -352,10 +350,10 @@ const getTotalCountOfDevEffortsByEstId = async(req, res) => {
             const result = await DevEfforts.getTotalCountOfDevEffortsByEstId(req.params);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
-                res.status(200).send({ message: 'DevEfforts fetch successfully!', total_estimated_efforts: result });
+                res.status(200).send({ message: 'DevEfforts fetch successfully!', result: result, success: true });
             } else {
                 // logger.error('Failed to get Estimation');
-                res.status(404).send({ error: 'Failed to get DevEfforts' });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
             }
         } catch (err) {
             // console.log('inside catch');
@@ -384,25 +382,26 @@ const getTotalCountOfDevEffortsByEstId = async(req, res) => {
                         // logger.info('Employee fetch successfully! with a new access token!');
                         return res.status(200).send({
                             message: 'DevEfforts fetch successfully! with a new access token!',
-                            total_estimated_efforts: result
+                            result: result,
+                            success: true
                         });
                     } else {
                         // logger.error('No employees found');
-                        return res.status(404).send({ error: 'No DevEfforts found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                     }
                 } catch (refreshErr) {
-                    // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
                 }
             } else {
                 // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token, token got expired' });
             }
         }
 
     } else {
         // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
 
