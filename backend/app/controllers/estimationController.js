@@ -15,14 +15,11 @@ const createEstimation = async(req, res) => {
 
         const headersArr = header.split(',');
 
-        // console.log(headersArr);
-
         const accessToken = headersArr[0].split(' ')[1];
         const refreshToken = headersArr[1].split(' ')[2];
 
         if (!accessToken) {
-            // logger.error('No access token provided');
-            return res.status(404).send({ error: 'No access token provided' });
+            return res.status(404).send({ error: 'Please check token' });
         }
 
         try {
@@ -31,60 +28,49 @@ const createEstimation = async(req, res) => {
 
             // Check if the user is valid
             if (!authData.user) {
-                // logger.error('User not authorized');
-                return res.status(404).send({ error: 'User not authorized' });
+                return res.status(404).send({ error: 'Please check token' });
             }
+
             // If verification succeeds, proceed to get employees
             const result = await Estimations.createEstimation(req.body);
             if (result) {
-                // logger.info('Estimations created successfully!');
-                res.status(200).send({ message: 'Estimations created successfully!', result: result[0] });
+                res.status(200).send({ message: 'Estimations created successfully!', result: result.insertId ? true : false });
             } else {
-                // logger.error('Failed to create Estimations');
-                res.status(404).send({ error: 'Failed to create Estimations' });
+                res.status(200).send({ error: 'Something went wrong, please check data properly' });
             }
         } catch (err) {
             if (err.name === 'TokenExpiredError') {
                 if (!refreshToken) {
-                    // logger.error('No refresh token provided');
-                    return res.status(404).send({ error: 'No refresh token provided' });
+                    return res.status(404).send({ error: 'Please check token' });
                 }
 
-                try { // Verify the refresh token
+                try {
+                    // Verify the refresh token
                     const authData = jwt.verify(refreshToken, refreshSecretKey);
 
                     // Check if the user is valid
                     if (!authData.user) {
-                        // logger.error('User not authorized');
-                        return res.status(404).send({ error: 'User not authorized' });
+                        return res.status(404).send({ error: 'Please check token' });
                     }
+
                     const result = await Estimations.createEstimation(req.body);
                     if (result) {
-                        // logger.info('Estimations created successfully! with a new access token!');
-                        return res.status(200).send({ message: 'Estimations created successfully! with a new access token!', result: result[0] });
+                        return res.status(200).send({ message: 'Estimations created successfully! with a new access token!', result: result.insertId ? true : false });
                     } else {
-                        // logger.error('No Estimations found');
-                        return res.status(404).send({ error: 'No Estimations found' });
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly' });
                     }
                 } catch (refreshErr) {
-                    // console.log(refreshErr);
-                    // logger.error('Invalid refresh token');
-                    return res.status(404).send({ error: 'Invalid refresh token' });
+                    return res.status(404).send({ error: 'Please check token' });
                 }
             } else {
-                // console.log(err);
-                // logger.error('Invalid access token');
-                return res.status(404).send({ error: 'Invalid access token' });
+                return res.status(404).send({ error: 'Please check token' });
             }
         }
-
-
     } else {
-        // logger.error('No access token provided');
-        return res.status(404).send({ error: 'No access token provided' });
+        return res.status(404).send({ error: 'Please check token' });
     }
-
 };
+
 
 const getEstimationsByUserId = async(req, res) => {
     // console.log(req, res);
