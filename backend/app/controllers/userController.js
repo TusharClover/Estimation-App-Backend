@@ -23,7 +23,7 @@ const generateTokens = (user) => {
 const login = async(req, res) => {
     try {
         const authenticatedUser = await User.login(req);
-        // console.log(req, "inside controller");
+        console.log(authenticatedUser, "inside controller");
 
         if (authenticatedUser) {
             // Generate both access and refresh tokens

@@ -34,9 +34,9 @@ const createEstimation = async(req, res) => {
             // If verification succeeds, proceed to get employees
             const result = await Estimations.createEstimation(req.body);
             if (result) {
-                return res.status(200).send({ message: 'Estimations created successfully!', result: result.insertId ? true : false, success: true });
+                return res.status(200).send({ message: 'Estimations created successfully!', result: result.insertId, success: true });
             } else {
-                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: 0, success: false });
             }
         } catch (err) {
             if (err.name === 'TokenExpiredError') {
