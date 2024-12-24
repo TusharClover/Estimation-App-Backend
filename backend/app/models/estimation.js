@@ -4,7 +4,7 @@ const pool = require('../config/db');
 
 createEstimation = async(req) => {
     try {
-        const [rows] = await pool.execute('INSERT INTO estimations (client_name,project_name,received_on,prepared_by,technology,currency_of_revenue,userid) VALUES ("' + req.client_name + '","' + req.project_name + '","' + req.received_on + '","' + req.prepared_by + '","' + req.technology + '","' + req.currency_of_revenue + '","' + req.userid + '")');
+        const [rows] = await pool.execute('INSERT INTO estimations (client_name,project_name,received_on,prepared_by,reviewed_by,technology,currency_of_revenue,unit_of_estimation,userid) VALUES ("' + req.client_name + '","' + req.project_name + '","' + req.received_on + '","' + req.prepared_by + '","' + req.reviewed_by + '","' + req.technology + '","' + req.currency_of_revenue + '","' + req.unit_of_estimation + '","' + req.userid + '")');
         return rows;
     } catch (error) {
         throw error;
