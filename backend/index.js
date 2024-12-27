@@ -26,6 +26,8 @@ app.use(express.json());
 
 app.use('/api/users', require('./app/routes/userRoutes'));
 
+app.use('/api/clients', require('./app/routes/clientsRoutes'));
+
 app.use('/api/estimations', require('./app/routes/estimationRoutes'));
 
 app.use('/api/devefforts', require('./app/routes/devEffortsRoutes'));
