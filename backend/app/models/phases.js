@@ -38,7 +38,7 @@ createPhasesForEstimation = async(req) => {
             "${phase.phase_name}",
             ${phase.efforts},
             ${phase.default_percentage},
-            ${phase.actual_percentage},
+            ${phase.actual_efforts},
             ${phase.project_phase_id},
             ${phase.estimation_id}
         )`).join(',');
@@ -49,7 +49,7 @@ createPhasesForEstimation = async(req) => {
                 phase_name,
                 efforts,
                 default_percentage,
-                actual_percentage,
+                actual_efforts,
                 project_phase_id,
                 estimation_id
             ) VALUES ${values}
