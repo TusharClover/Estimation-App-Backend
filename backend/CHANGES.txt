@@ -1,0 +1,10 @@
+client name dropdown(master)
+prepared by (user name) emp details(master)
+reviewed by (drop down) (master)
+multi select (technology)
+
+
+task name (provide suggestions) give multiple entries 
+
+
+days edit option(phases)

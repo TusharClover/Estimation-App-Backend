@@ -38,6 +38,7 @@ app.use('/api/proposedschedule', require('./app/routes/proposedScheduleRoutes'))
 
 app.use('/api/rateCard', require('./app/routes/rateCardRoutes'));
 
+app.use('/api/sites', require('./app/routes/sitesRoutes'));
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server listening on port ${port}`);
