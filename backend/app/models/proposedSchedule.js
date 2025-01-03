@@ -6,9 +6,9 @@ createProposedScheduleByEstnId = async(req) => {
     console.log(req, "request");
     try {
         // Extracting the array of proposed schedules from the request
-        const { proposedSchedule } = { "proposedSchedule": req }; // `proposedSchedule` is expected to be an array of objects
-        console.log(proposedSchedule, "proposedSchedule");
-
+        const proposedSchedule = req.proposedSchedule; // `proposedSchedule` is expected to be an array of objects
+        // console.log(proposedSchedule, "proposedSchedule");
+        // console.log(proposedSchedule.proposedSchedule);
         if (!Array.isArray(proposedSchedule) || proposedSchedule.length === 0) {
             throw new Error("No data provided for bulk insert");
         }
@@ -47,7 +47,9 @@ createProposedScheduleByEstnId = async(req) => {
         console.log(insertedScheduleIds, "Inserted Schedule IDs");
 
         // Insert weeks data linked to the newly inserted proposed schedules
+
         const weekValues = proposedSchedule.flatMap((schedule, index) =>
+
             schedule.weeks.map(week => `(
                 ${week.days_count},
                 ${week.week_order},
@@ -121,7 +123,7 @@ updateProposedScheduleByEstnId = async(req) => {
     console.log(req, "request");
     try {
         // Extracting the array of proposed schedules from the request
-        const { proposedSchedule } = { "proposedSchedule": req }; // `proposedSchedule` is expected to be an array of objects
+        const proposedSchedule = req; // `proposedSchedule` is expected to be an array of objects
         console.log(proposedSchedule, "proposedSchedule");
 
         if (!Array.isArray(proposedSchedule) || proposedSchedule.length === 0) {
