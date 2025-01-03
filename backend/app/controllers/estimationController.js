@@ -126,7 +126,7 @@ const getEstimationsByUserId = async(req, res) => {
 
                     // console.log(authData);
 
-                    const result = await Estimation.getEstimationsByUserId(req.params);
+                    const result = await Estimations.getEstimationsByUserId(req.params);
 
                     // console.log(result);
 
