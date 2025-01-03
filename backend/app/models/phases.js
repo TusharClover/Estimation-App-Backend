@@ -4,7 +4,7 @@ const pool = require('../config/db');
 
 getAllPhases = async(req) => {
     try {
-        const [rows] = await pool.execute('SELECT * FROM project_phases');
+        const [rows] = await pool.execute('SELECT id,default_percentage,phase_name AS name FROM project_phases;');
         return rows; // Return true if users successfully
     } catch (error) {
         throw error; // Re-throw for handling in the controller
