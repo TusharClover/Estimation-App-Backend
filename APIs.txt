@@ -1,0 +1,364 @@
+======== APIs ========= 
+
+1.****LOGIN****
+
+POST request: http://localhost:3001/api/users/login
+
+Parameters: {"user":"eyJ1c2VybmFtZSI6IkNJOTgwNyIsInBhc3N3b3JkIjoiZEdWemRFQXhNak09In0="}
+
+=====================
+
+Headers : 
+authorization: Bearer AccessTokenValue, Refresh RefreshTokenValue
+
+2.****CREATE ESTIMATION****
+
+POST request: http://localhost:3001/api/estimations/createEstimation
+
+Parameters:
+{
+  "client_name": "Example Client",
+  "project_name": "Example Project",
+  "received_on": "2024-12-12",
+  "prepared_by": "John Doe",
+  "reviewed_by": "Jane Smith",
+  "technology": "Java",
+  "unit_of_estimation": "Hours",
+  "currency_of_revenue": "USD",
+  "userid": 1
+}
+
+3.****VIEW ALL ESTIMATION BY USER ID*****
+
+GET request: http://localhost:3001/api/estimations/getEstimationsByUserId/1(User ID as Parameter)
+
+
+4.****VIEW ALL ESTIMATION BY ID*****
+
+GET request: http://localhost:3001/api/estimations/getEstimationsById/:id(ESTIMATION ID as Parameter)
+
+5.****UPDATE ESTIMATION****
+
+PUT request: http://localhost:3001/api/estimations/updateEstimationById
+
+Parameters:
+{
+  "id": 1,
+  "client_name": "Example Client",
+  "project_name": "Example Project",
+  "received_on": "2024-12-12",
+  "prepared_by": "John Doe",
+  "reviewed_by": "Jane Smith",
+  "technology": "Java",
+  "unit_of_estimation": "Hours",
+  "currency_of_revenue": "USD",
+  "userid": 1
+}
+
+6.****CREATE DEV EFFORTS IN BULK****
+
+POST request: http://localhost:3001/api/devefforts/createDevEfforts
+
+Parameters:
+[{
+    "task_name": "UI development",
+    "complexity": "low",
+    "count": 10,
+    "unit_efforts": 10,
+    "estimated_efforts": 100,
+    "estimation_id": 1
+},{
+    "task_name": "UI design",
+    "complexity": "low",
+    "count": 10,
+    "unit_efforts": 10,
+    "estimated_efforts": 100,
+    "estimation_id": 1
+}]
+
+7.****VIEW ALL DEV EFFORTS BY ESTIMATION ID*****
+
+GET request: http://localhost:3001/api/devefforts/getDevEffortsById/1(ESTIMATION ID as Parameter)
+
+
+8.****UPDATE DEV EFFORT****
+
+PUT request: http://localhost:3001/api/devefforts/updateDevEffortById
+
+Parameters:
+{
+    "id": 1,
+    "task_name": "UI design",
+    "complexity": "low",
+    "count": 10,
+    "unit_efforts": 10,
+    "estimated_efforts": 100,
+    "estimation_id": 1
+}
+
+9.****DELETE DEV EFFORTS BY DEV EFFORT ID*****
+
+DELETE request: http://localhost:3001/api/devefforts/deleteDevEffortById/1(DEV EFFORT ID as Parameter)
+
+10. GET DEV EFFORTS COUNT BASED ON ESTIMATION ID
+
+GET request: http://localhost:3001/api/devefforts/getTotalCountOfDevEffortsByEstId/1(ESTIMATION ID as Parameter)
+
+11. GET ALL PHASES (GENERIC API)
+
+GET request: http://localhost:3001/api/phases/getAllPhases
+
+12. ADD PHASES FOR PARTICULAR ESTIMATION(WITH ESTIMATION ID)
+
+POST request: http://localhost:3001/api/phases/createPhasesForEstimation
+
+Parameters:
+[
+    {
+        "phase_name": "Requirement Analysis",
+        "efforts": 9,
+        "default_percentage": 9,
+        "actual_percentage": 9,
+        "project_phase_id": 1,
+        "estimation_id": 1
+    },
+    {
+        "phase_name": "Solution Design",
+        "efforts": 13,
+        "default_percentage": 13,
+        "actual_percentage": 13,
+        "project_phase_id": 2,
+        "estimation_id": 1
+    },
+    {
+        "phase_name": "Install & Configuration",
+        "efforts": 40,
+        "default_percentage": 40,
+        "actual_percentage": 40,
+        "project_phase_id": 3,
+        "estimation_id": 1
+    },
+    {
+        "phase_name": "Integrated Testing",
+        "efforts": 15,
+        "default_percentage": 15,
+        "actual_percentage": 15,
+        "project_phase_id": 4,
+        "estimation_id": 1
+    },
+    {
+        "phase_name": "Training",
+        "efforts": 9,
+        "default_percentage": 9,
+        "actual_percentage": 9,
+        "project_phase_id": 5,
+        "estimation_id": 1
+    },
+    {
+        "phase_name": "Acceptance Testing",
+        "efforts": 4,
+        "default_percentage": 4,
+        "actual_percentage": 4,
+        "project_phase_id": 6,
+        "estimation_id": 1
+    },
+    {
+        "phase_name": "Documentation",
+        "efforts": 5,
+        "default_percentage": 5,
+        "actual_percentage": 5,
+        "project_phase_id": 7,
+        "estimation_id": 1
+    },
+    {
+        "phase_name": "Go-Live",
+        "efforts": 5,
+        "default_percentage": 5,
+        "actual_percentage": 5,
+        "project_phase_id": 8,
+        "estimation_id": 1
+    }
+]
+
+13. CREATE PROPOSED SCHEDULE FOR PARTICULAR ESTIMATION(WITH ESTIMATION ID)
+
+POST request: http://localhost:3001/api/proposedschedule/createProposedScheduleByEstnId
+
+Parameters: 
+[
+    {
+      "phase_id": 5,
+      "phase_name": "Training",
+      "site_id": 1,
+      "site_name": "Onsite",
+      "profile_id": 1,
+      "profile_name": "Java Jr Developer (0-2 yrs)",
+      "schedule_order": 1,
+      "estimation_id": 1,
+      "weeks": [
+        {
+          "days_count": 4,
+          "week_order": 1,
+          "estimation_id": 1
+        },
+        {
+          "days_count": 3,
+          "week_order": 2,
+          "estimation_id": 1
+        }
+      ]
+    },
+    {
+      "phase_id": 5,
+      "phase_name": "Training",
+      "site_id": 1,
+      "site_name": "Onsite",
+      "profile_id": 1,
+      "profile_name": "Java Jr Developer (0-2 yrs)",
+      "schedule_order": 2,
+      "estimation_id": 1,
+      "weeks": [
+        {
+          "days_count": 4,
+          "week_order": 1,
+          "estimation_id": 1
+        },
+        {
+          "days_count": 3,
+          "week_order": 2,
+          "estimation_id": 1
+        }
+      ]
+    }
+  ]
+
+14. GET PROPOSED SCHEDULES BY ESTIMATION ID
+
+GET request: http://localhost:3001/api/proposedschedule/getProposedScheduleByEstnId/1
+
+Response: 
+{
+    "message": "proposedSchedule fetch successfully!",
+    "result": [
+        {
+            "id": 1,
+            "phase_name": "Training",
+            "phase_id": 5,
+            "site_id": 1,
+            "site_name": "Onsite",
+            "profile_id": 1,
+            "profile_name": "Java Jr Developer (0-2 yrs)",
+            "schedule_order": 1,
+            "estimation_id": 1,
+            "weeks": [
+                {
+                    "id": 1,
+                    "days_count": 4,
+                    "week_order": 1,
+                    "estimation_id": 1,
+                    "proposed_schedule_id": 1
+                },
+                {
+                    "id": 2,
+                    "days_count": 3,
+                    "week_order": 2,
+                    "estimation_id": 1,
+                    "proposed_schedule_id": 1
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "phase_name": "Training",
+            "phase_id": 5,
+            "site_id": 1,
+            "site_name": "Onsite",
+            "profile_id": 1,
+            "profile_name": "Java Jr Developer (0-2 yrs)",
+            "schedule_order": 2,
+            "estimation_id": 1,
+            "weeks": [
+                {
+                    "id": 3,
+                    "days_count": 4,
+                    "week_order": 1,
+                    "estimation_id": 1,
+                    "proposed_schedule_id": 2
+                },
+                {
+                    "id": 4,
+                    "days_count": 3,
+                    "week_order": 2,
+                    "estimation_id": 1,
+                    "proposed_schedule_id": 2
+                }
+            ]
+        }
+    ]
+}
+
+15. GET ALL RATE CARD DETAILS BY ESTIMATION ID
+
+GET request: http://localhost:3001/api/rateCard/getAllRateCardByEstId/1
+
+Response: 
+{
+    "message": "RateCard fetch successfully! with a new access token!",
+    "result": [
+        {
+            "id": 1,
+            "level": "0-2 yrs",
+            "tech_role": "Java Jr Developer (0-2 yrs)",
+            "ctc_pm": "25000.00",
+            "loaded_ctc": "32500.00",
+            "site_id": 1,
+            "site": "Onsite",
+            "profile_id": 1,
+            "infra_cost": "1000.00",
+            "loaded_cost": "33500.00",
+            "margin": "50.00",
+            "rate_pm": "66000.00",
+            "rate_pd": "3300.00",
+            "approx_distribution": null,
+            "weighted_rate": "1675.00",
+            "cost_pd": "1675.00"
+        },
+        {
+            "id": 2,
+            "level": "0-2 yrs",
+            "tech_role": "Java Jr Developer (0-2 yrs)",
+            "ctc_pm": "25000.00",
+            "loaded_ctc": "32500.00",
+            "site_id": 2,
+            "site": "Offshore",
+            "profile_id": 1,
+            "infra_cost": "10000.00",
+            "loaded_cost": "42500.00",
+            "margin": "50.00",
+            "rate_pm": "75000.00",
+            "rate_pd": "3750.00",
+            "approx_distribution": "50",
+            "weighted_rate": "1875.00",
+            "cost_pd": "2125.00"
+        }
+    ]
+}
+
+16. GET ALL RATE CARD 
+
+GET request: http://localhost:3001/api/rateCard/getAllRateCard
+
+17. GET ALL REVIEWERS
+
+GET request: http://localhost:3001/api/users/getAllReviewers
+
+18. GET ALL CLIENTS
+
+GET request: http://localhost:3001/api/clients/getAllClients
+
+19. GET COSTING BASED ON RATE CARD BY ESTIMATION ID
+
+GET request: http://localhost:3001/api/rateCard/getCostingBasedOnRateCardByEstId/2(:estimation_id)
+
+
+

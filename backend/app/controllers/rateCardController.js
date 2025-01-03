@@ -169,5 +169,85 @@ const getAllRateCardByEstId = async(req, res) => {
 
 };
 
+const getCostingBasedOnRateCardByEstId = async(req, res) => {
+    // console.log(req);
+    const header = req.headers['authorization'];
+    if (header) {
+        const headersArr = header.split(',');
 
-module.exports = { getAllRateCard, getAllRateCardByEstId };
+        // console.log(headersArr);
+
+        const accessToken = headersArr[0].split(' ')[1];
+        const refreshToken = headersArr[1].split(' ')[2];
+
+        if (!accessToken) {
+            // logger.error('No access token provided');
+            return res.status(404).send({ error: 'No access token provided' });
+        }
+        try {
+            // Verify access token
+            const authData = jwt.verify(accessToken, secretKey);
+
+            // Check if the user is valid
+            if (!authData.user) {
+                // logger.error('User not authorized');
+                return res.status(404).send({ error: 'User not authorized' });
+            }
+
+            const result = await RateCard.getCostingBasedOnRateCardByEstId(req.params);
+            if (result) {
+                // logger.info('Estimation fetch successfully!');
+                res.status(200).send({ message: 'Costing fetch successfully!', result: result, success: true });
+            } else {
+                // logger.error('Failed to get Estimation');
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+            }
+        } catch (err) {
+            // console.log('inside catch');
+            if (err.name === 'TokenExpiredError') {
+                if (!refreshToken) {
+                    // logger.error('No refresh token provided');
+                    return res.status(404).send({ error: 'No refresh token provided' });
+                }
+
+                try { // Verify the refresh token
+                    const authData = jwt.verify(refreshToken, refreshSecretKey);
+
+                    // Check if the user is valid
+                    if (!authData.user) {
+                        // logger.error('User not authorized');
+                        return res.status(404).send({ error: 'User not authorized' });
+                    }
+
+                    // console.log(authData);
+
+                    const result = await RateCard.getCostingBasedOnRateCardByEstId(req.params);
+                    if (result) {
+                        // logger.info('Estimation fetch successfully!');
+                        res.status(200).send({ message: 'Costing fetch successfully!', result: result, success: true });
+                    } else {
+                        // logger.error('Failed to get Estimation');
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+                    }
+
+                } catch (refreshErr) {
+                    // logger.error('Invalid refresh token');
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+                }
+            } else {
+                // logger.error('Invalid access token');
+                return res.status(404).send({ error: 'Please check token, token got expired' });
+            }
+        }
+
+    } else {
+        // logger.error('No access token provided');
+        return res.status(404).send({ error: 'Headers not added properly' });
+    }
+
+
+
+};
+
+
+module.exports = { getAllRateCard, getAllRateCardByEstId, getCostingBasedOnRateCardByEstId };

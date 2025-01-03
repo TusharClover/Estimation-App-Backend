@@ -21,5 +21,15 @@ getAllRateCardByEstId = async(req) => {
     }
 };
 
+getCostingBasedOnRateCardByEstId = async(req) => {
+    var estimation_id = req.estimation_id;
+    try {
+        const [rows] = await pool.execute(`SELECT eps.site_id,eps.site_name,eps.profile_id,eps.profile_name,eps.schedule_order,eps.estimation_id,COALESCE(SUM(w.days_count), 0) AS total_days_count,rc.margin,rc.rate_pd,rc.cost_pd FROM estimation_proposed_schedules eps LEFT JOIN weeks w ON eps.id = w.proposed_schedule_id LEFT JOIN rate_card rc ON eps.site_id = rc.site_id AND eps.profile_id = rc.profile_id WHERE eps.estimation_id = ` + estimation_id + ` GROUP BY eps.id,rc.id;`);
+        return rows; // Return true if users successfully
+    } catch (error) {
+        throw error; // Re-throw for handling in the controller
+    }
+};
 
-module.exports = { getAllRateCard, getAllRateCardByEstId };
+
+module.exports = { getAllRateCard, getAllRateCardByEstId, getCostingBasedOnRateCardByEstId };
