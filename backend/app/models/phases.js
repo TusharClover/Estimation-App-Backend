@@ -11,8 +11,6 @@ getAllPhases = async(req) => {
     }
 };
 
-
-
 getPhasesByEstimationId = async(req) => {
     try {
         const [rows] = await pool.execute('SELECT * FROM estimation_project_phases WHERE estimation_id =' + req.estimation_id);
