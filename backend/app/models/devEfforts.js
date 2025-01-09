@@ -6,7 +6,7 @@ createDevEfforts = async(req) => {
     console.log(req, "request");
     try {
         // Extracting the array of data to be inserted
-        const { efforts } = { "efforts": req }; // `efforts` is expected to be an array of objects
+        const { efforts } = { "efforts": req.tasks }; // `efforts` is expected to be an array of objects
         console.log(efforts, "efforts");
         if (!Array.isArray(efforts) || efforts.length === 0) {
             throw new Error("No data provided for bulk insert");
@@ -33,10 +33,13 @@ createDevEfforts = async(req) => {
                 estimation_id
             ) VALUES ${values}
         `;
-
+        const [deletedRows] = await pool.execute('DELETE FROM development_efforts WHERE estimation_id = ' + req.estimation_id);
+        console.log(deletedRows, "delete result");
         // Execute the query
-        const [rows] = await pool.execute(query);
-        return rows;
+        if (deletedRows) {
+            const [rows] = await pool.execute(query);
+            return rows;
+        }
     } catch (error) {
         throw error;
         // return false;
