@@ -38,39 +38,49 @@ createProposedScheduleByEstnId = async(req) => {
             ) VALUES ${scheduleValues}
         `;
 
-        // Execute the query to insert proposed schedules
-        const [scheduleRows] = await pool.execute(scheduleQuery);
-        console.log(scheduleRows, "Proposed Schedules Inserted");
+        const [deletedRows] = await pool.execute('DELETE FROM estimation_proposed_schedules WHERE estimation_id = ' + req.estimation_id);
 
-        // After inserting the proposed schedules, we need to retrieve the inserted schedule ids
-        const insertedScheduleIds = Array.from({ length: proposedSchedule.length }, (_, i) => scheduleRows.insertId + i);
-        console.log(insertedScheduleIds, "Inserted Schedule IDs");
+        const [deletedWeekRows] = await pool.execute('DELETE FROM weeks WHERE estimation_id = ' + req.estimation_id);
 
-        // Insert weeks data linked to the newly inserted proposed schedules
-        const weekValues = proposedSchedule.flatMap((schedule, index) =>
-            schedule.weeks.map(week => `(
-                ${week.days_count},
-                ${week.week_order},
-                ${week.estimation_id},
-                ${insertedScheduleIds[index]}  -- Proposed schedule ID from the phases insert
-            )`)
-        ).join(',');
+        // console.log(rows);
+        // console.log(deletedRows);
 
-        const weekQuery = `
-            INSERT INTO weeks (
-                days_count,
-                week_order,
-                estimation_id,
-                proposed_schedule_id
-            ) VALUES ${weekValues}
-        `;
+        if (deletedRows) {
+            // Execute the query to insert proposed schedules
+            const [scheduleRows] = await pool.execute(scheduleQuery);
+            console.log(scheduleRows, "Proposed Schedules Inserted");
 
-        // Execute the query to insert weeks
-        const [weekRows] = await pool.execute(weekQuery);
-        console.log(weekRows, "Weeks Inserted");
+            // After inserting the proposed schedules, we need to retrieve the inserted schedule ids
+            const insertedScheduleIds = Array.from({ length: proposedSchedule.length }, (_, i) => scheduleRows.insertId + i);
+            console.log(insertedScheduleIds, "Inserted Schedule IDs");
 
-        // Return the rows from the week insert operation with the correct ids
-        return weekRows;
+            // Insert weeks data linked to the newly inserted proposed schedules
+            const weekValues = proposedSchedule.flatMap((schedule, index) =>
+                schedule.weeks.map(week => `(
+         ${week.days_count},
+         ${week.week_order},
+         ${week.estimation_id},
+         ${insertedScheduleIds[index]}  -- Proposed schedule ID from the phases insert
+     )`)
+            ).join(',');
+
+            const weekQuery = `
+     INSERT INTO weeks (
+         days_count,
+         week_order,
+         estimation_id,
+         proposed_schedule_id
+     ) VALUES ${weekValues}
+ `;
+
+            // Execute the query to insert weeks
+            const [weekRows] = await pool.execute(weekQuery);
+            console.log(weekRows, "Weeks Inserted");
+
+            // Return the rows from the week insert operation with the correct ids
+            return weekRows;
+        }
+
     } catch (error) {
         console.error(error);
         throw new Error("Error while creating proposed schedules and weeks");

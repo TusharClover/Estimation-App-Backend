@@ -57,7 +57,7 @@ createPhasesForEstimation = async(req) => {
         // const [rows] = await pool.execute(deleteQuery);
         const [deletedRows] = await pool.execute('DELETE FROM estimation_project_phases WHERE estimation_id = ' + req.estimation_id);
         // console.log(rows);
-        console.log(deletedRows);
+        // console.log(deletedRows);
         if (deletedRows) {
             // Execute the query
             const [rows] = await pool.execute(query);
