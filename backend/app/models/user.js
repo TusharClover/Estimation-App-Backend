@@ -32,7 +32,7 @@ const login = async(req) => {
 
 getAllReviewers = async(req) => {
     try {
-        const [rows] = await pool.execute('SELECT id,employee_id,employee_name,employee_grade FROM users WHERE employee_grade="M3"');
+        const [rows] = await pool.execute('SELECT id,employee_id,employee_name,employee_grade FROM users WHERE employee_grade="M4"');
         return rows; // Return true if users successfully
     } catch (error) {
         throw error; // Re-throw for handling in the controller
