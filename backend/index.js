@@ -42,6 +42,9 @@ app.use('/api/rateCard', require('./app/routes/rateCardRoutes'));
 
 app.use('/api/sites', require('./app/routes/sitesRoutes'));
 
+app.use('/api/costing', require('./app/routes/costingRoutes'));
+
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server listening on port ${port}`);
 });
