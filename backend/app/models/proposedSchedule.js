@@ -6,7 +6,7 @@ createProposedScheduleByEstnId = async(req) => {
     console.log(req, "request");
     try {
         // Extracting the array of proposed schedules from the request
-        const { proposedSchedule } = { "proposedSchedule": req }; // `proposedSchedule` is expected to be an array of objects
+        const { proposedSchedule } = { "proposedSchedule": req.schedule }; // `proposedSchedule` is expected to be an array of objects
         console.log(proposedSchedule, "proposedSchedule");
 
         if (!Array.isArray(proposedSchedule) || proposedSchedule.length === 0) {
