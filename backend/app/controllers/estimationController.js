@@ -314,4 +314,87 @@ const updateEstimationById = async(req, res) => {
         return res.status(404).send({ error: 'Headers not added properly' });
     }
 };
-module.exports = { createEstimation, getEstimationsByUserId, getEstimationsById, updateEstimationById };
+
+
+const getEstimationByUserId = async(req, res) => {
+    // console.log(req);
+    const header = req.headers['authorization'];
+    if (header) {
+        const headersArr = header.split(',');
+
+        // console.log(headersArr);
+
+        const accessToken = headersArr[0].split(' ')[1];
+        const refreshToken = headersArr[1].split(' ')[2];
+
+        if (!accessToken) {
+            // logger.error('No access token provided');
+            return res.status(404).send({ error: 'Please check access token' });
+        }
+        try {
+            // Verify access token
+            const authData = jwt.verify(accessToken, secretKey);
+
+            // Check if the user is valid
+            if (!authData.user) {
+                // logger.error('User not authorized');
+                return res.status(404).send({ error: 'User is not authenticated' });
+            }
+
+            const result = await Estimations.getEstimationByUserId(req.params);
+            if (result) {
+                // logger.info('Estimation fetch successfully!');
+                res.status(200).send({ message: 'Estimation fetch successfully!', result: result[0], success: true });
+            } else {
+                // logger.error('Failed to get Estimation');
+                return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+            }
+        } catch (err) {
+            // console.log('inside catch');
+            if (err.name === 'TokenExpiredError') {
+                if (!refreshToken) {
+                    // logger.error('No refresh token provided');
+                    return res.status(404).send({ error: 'Please check refresh token' });
+                }
+
+                try { // Verify the refresh token
+                    const authData = jwt.verify(refreshToken, refreshSecretKey);
+
+                    // Check if the user is valid
+                    if (!authData.user) {
+                        // logger.error('User not authorized');
+                        return res.status(404).send({ error: 'User is not authenticated' });
+                    }
+
+                    // console.log(authData);
+
+                    const result = await Estimation.getEstimationByUserId(req.params);
+
+                    // console.log(result);
+
+                    if (result) {
+                        // logger.info('Employee fetch successfully! with a new access token!');
+                        return res.status(200).send({
+                            message: 'Estimation fetch successfully! with a new access token!',
+                            result: result[0],
+                            success: true
+                        });
+                    } else {
+                        // logger.error('No employees found');
+                        return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+                    }
+                } catch (refreshErr) {
+                    console.log(refreshErr, "resfresh Error");
+                    return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
+                }
+            } else {
+                // logger.error('Invalid access token');
+                return res.status(404).send({ error: 'Please check token, token got expired' });
+            }
+        }
+
+    } else {
+        return res.status(404).send({ error: 'Headers not added properly' });
+    }
+};
+module.exports = { createEstimation, getEstimationsByUserId, getEstimationsById, updateEstimationById, getEstimationByUserId };

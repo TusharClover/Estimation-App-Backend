@@ -360,5 +360,7 @@ GET request: http://localhost:3001/api/clients/getAllClients
 
 GET request: http://localhost:3001/api/rateCard/getCostingBasedOnRateCardByEstId/2(:estimation_id)
 
+20. GET ESTIMATIONS BY USER ID
 
+GET request: http://localhost:3001/api/estimations/getEstimationsByUserId/2(:userid)
 

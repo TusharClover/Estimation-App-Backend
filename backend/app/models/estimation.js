@@ -47,5 +47,16 @@ updateEstimationById = async(req) => {
     }
 };
 
+getEstimationByUserId = async(req) => {
+    // console.log(req.id);
+    let id = req.id;
+    try {
+        const [rows] = await pool.execute('SELECT DISTINCT e.* FROM estimations e INNER JOIN estimation_proposed_schedules ep ON e.id = ep.estimation_id WHERE e.userid = ' + id);
+        return rows; // Return true if users successfully
+    } catch (error) {
+        throw error; // Re-throw for handling in the controller
+    }
+};
 
-module.exports = { createEstimation, getEstimationsByUserId, getEstimationsById, updateEstimationById };
+
+module.exports = { createEstimation, getEstimationsByUserId, getEstimationsById, updateEstimationById, getEstimationByUserId };
