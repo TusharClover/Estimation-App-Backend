@@ -16,8 +16,7 @@ createDevEfforts = async(req) => {
         const values = efforts.map(effort => `(
             "${effort.task_name}",
             "${effort.complexity}",
-            ${effort.count},
-            ${effort.unit_efforts},
+            ${effort.complexitywise_efforts},
             ${effort.estimated_efforts},
             ${effort.estimation_id}
         )`).join(',');
@@ -27,8 +26,7 @@ createDevEfforts = async(req) => {
             INSERT INTO development_efforts (
                 task_name,
                 complexity,
-                count,
-                unit_efforts,
+                complexitywise_efforts,
                 estimated_efforts,
                 estimation_id
             ) VALUES ${values}
@@ -72,7 +70,7 @@ updateDevEffortById = async(req) => {
     // console.log(req.body);
     var param = req.body;
     try {
-        const [rows] = await pool.execute('UPDATE development_efforts SET task_name = "' + param.task_name + '", complexity = "' + param.complexity + '",count = ' + param.count + ',unit_efforts = ' + param.unit_efforts + ',estimated_efforts = ' + param.estimated_efforts + ',estimation_id = ' + param.estimation_id + ' WHERE id = ' + param.id + ';');
+        const [rows] = await pool.execute('UPDATE development_efforts SET task_name = "' + param.task_name + '", complexity = "' + param.complexity + '",complexitywise_efforts = ' + param.complexitywise_efforts + ',estimated_efforts = ' + param.estimated_efforts + ',estimation_id = ' + param.estimation_id + ' WHERE id = ' + param.id + ';');
         // console.log(rows);
         return rows; // Return true if users successfully
     } catch (error) {

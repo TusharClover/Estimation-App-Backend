@@ -90,8 +90,7 @@ Parameters:
     "id": 1,
     "task_name": "UI design",
     "complexity": "low",
-    "count": 10,
-    "unit_efforts": 10,
+    "complexitywise_efforts": 10,
     "estimated_efforts": 100,
     "estimation_id": 1
 }
