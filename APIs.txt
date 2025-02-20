@@ -363,3 +363,7 @@ GET request: http://localhost:3001/api/rateCard/getCostingBasedOnRateCardByEstId
 
 GET request: http://localhost:3001/api/estimations/getEstimationsByUserId/2(:userid)
 
+21. DELETE ESTIMATION BY ID
+
+GET request: http://localhost:3001/api/estimations/deleteEstimationById/2(:userid)
+

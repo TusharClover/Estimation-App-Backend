@@ -23,6 +23,7 @@ getEstimationsByUserId = async(req) => {
 };
 
 
+
 getEstimationsById = async(req) => {
     // console.log(req.id);
     let id = req.id;
@@ -58,5 +59,31 @@ getEstimationByUserId = async(req) => {
     }
 };
 
+deleteEstimationById = async(req) => {
+    // console.log(req.id);
+    let id = req.id;
+    try {
+        // Start a transaction
+        await pool.execute('START TRANSACTION');
 
-module.exports = { createEstimation, getEstimationsByUserId, getEstimationsById, updateEstimationById, getEstimationByUserId };
+        // Delete dependent records in estimation_project_phases
+        await pool.execute('DELETE FROM estimation_project_phases WHERE estimation_id = ?', [id]);
+
+        // Delete dependent records in development_efforts
+        await pool.execute('DELETE FROM development_efforts WHERE estimation_id = ?', [id]);
+
+        // Now delete from estimations
+        const [result] = await pool.execute('DELETE FROM estimations WHERE id = ?', [id]);
+
+        // Commit the transaction
+        await pool.execute('COMMIT');
+
+        return result.affectedRows > 0; // Return true if deletion was successful
+    } catch (error) {
+        await pool.execute('ROLLBACK'); // Rollback on error
+        throw error; // Re-throw for handling in the controller
+    }
+};
+
+
+module.exports = { createEstimation, getEstimationsByUserId, getEstimationsById, updateEstimationById, getEstimationByUserId, deleteEstimationById };
