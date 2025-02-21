@@ -38,9 +38,10 @@ createProposedScheduleByEstnId = async(req) => {
             ) VALUES ${scheduleValues}
         `;
 
+        const [deletedWeekRows] = await pool.execute('DELETE FROM weeks WHERE estimation_id = ' + req.estimation_id);
+
         const [deletedRows] = await pool.execute('DELETE FROM estimation_proposed_schedules WHERE estimation_id = ' + req.estimation_id);
 
-        const [deletedWeekRows] = await pool.execute('DELETE FROM weeks WHERE estimation_id = ' + req.estimation_id);
 
         // console.log(rows);
         // console.log(deletedRows);
