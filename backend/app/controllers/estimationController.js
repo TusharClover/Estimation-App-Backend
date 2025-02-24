@@ -451,7 +451,7 @@ const deleteEstimationById = async(req, res) => {
 
                     // console.log(authData);
 
-                    const result = await Estimation.deleteEstimationById(req.params);
+                    const result = await Estimations.deleteEstimationById(req.params);
 
                     // console.log(result);
 
