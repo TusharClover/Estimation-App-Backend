@@ -400,7 +400,7 @@ const getEstimationByUserId = async(req, res) => {
 
 
 const deleteEstimationById = async(req, res) => {
-    // console.log(req);
+    console.log("Delete Estimation");
     const header = req.headers['authorization'];
     if (header) {
         const headersArr = header.split(',');

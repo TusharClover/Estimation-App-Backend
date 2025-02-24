@@ -15,7 +15,7 @@ getEstimationsByUserId = async(req) => {
     // console.log(req, "request params");
     let user_id = req.id;
     try {
-        const [rows] = await pool.execute('SELECT * FROM estimations WHERE userid = ' + user_id);
+        const [rows] = await pool.execute('SELECT * FROM estimations WHERE userid = ' + user_id + ' ORDER BY id DESC');
         return rows; // Return true if users successfully
     } catch (error) {
         throw error; // Re-throw for handling in the controller
