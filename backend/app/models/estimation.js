@@ -64,7 +64,7 @@ deleteEstimationById = async(req) => {
     let id = req.id;
     try {
         // Start a transaction
-        await pool.execute('START TRANSACTION');
+        // await pool.execute('START TRANSACTION');
 
         // Delete dependent records in estimation_project_phases
         await pool.execute('DELETE FROM estimation_project_phases WHERE estimation_id = ?', [id]);
@@ -76,11 +76,11 @@ deleteEstimationById = async(req) => {
         const [result] = await pool.execute('DELETE FROM estimations WHERE id = ?', [id]);
 
         // Commit the transaction
-        await pool.execute('COMMIT');
+        // await pool.execute('COMMIT');
 
         return result.affectedRows > 0; // Return true if deletion was successful
     } catch (error) {
-        await pool.execute('ROLLBACK'); // Rollback on error
+        // await pool.execute('ROLLBACK'); // Rollback on error
         throw error; // Re-throw for handling in the controller
     }
 };
