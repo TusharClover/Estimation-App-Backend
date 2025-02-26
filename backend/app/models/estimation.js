@@ -66,10 +66,12 @@ deleteEstimationById = async(req) => {
         // Start a transaction
         // await pool.execute('START TRANSACTION');
 
-        // Delete dependent records in estimation_project_phases
         await pool.execute('DELETE FROM estimation_project_phases WHERE estimation_id = ?', [id]);
 
-        // Delete dependent records in development_efforts
+        await pool.execute('DELETE FROM weeks WHERE estimation_id = ?', [id]);
+
+        await pool.execute('DELETE FROM estimation_proposed_schedules WHERE estimation_id = ?', [id]);
+
         await pool.execute('DELETE FROM development_efforts WHERE estimation_id = ?', [id]);
 
         // Now delete from estimations

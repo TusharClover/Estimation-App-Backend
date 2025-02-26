@@ -425,6 +425,7 @@ const deleteEstimationById = async(req, res) => {
             }
 
             const result = await Estimations.deleteEstimationById(req.params);
+            console.log(result);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
                 res.status(200).send({ message: 'Estimation deleted successfully!', result: result[0], success: true });
