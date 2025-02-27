@@ -12,6 +12,7 @@ const login = async(req) => {
         const [rows] = await pool.execute('SELECT id,employee_id,employee_name,employee_grade FROM users WHERE employee_id="' + user.username + '" AND password="' + user.password + '"');
         // console.log(rows);
         if (rows.length > 0) {
+            // console.log("true");
             // Return the user details including the user ID
             const user = rows[0]; // Assuming there's only one matching row
             console.log(user);
@@ -20,6 +21,7 @@ const login = async(req) => {
                 user: user
             };
         } else {
+            // console.log("false");
             return { success: false }; // Return false if credentials are incorrect
         }
     } catch (error) {
