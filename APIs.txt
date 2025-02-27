@@ -381,10 +381,10 @@ GET request: http://localhost:3001/api/proposedschedule/getProposedScheduleByEst
 POST request: http://localhost:3001/api/costing/insertEstimationStatus
 POST request: http://localhost:3001/api/costing/updateEstimationStatus
 
-Parameters: {
-	estimation_id:1,
-	status:Approved,
-	remark: Whatever Remark wanted to add,
-	prepared_by:CI9807,
-	reviewed_by:CI1124
+{
+	"estimation_id":21,
+	"status":"Approved",
+	"remark": "Whatever Remark wanted to add",
+	"prepared_by":"CI9807",
+	"reviewed_by":"CI1124"
 }
