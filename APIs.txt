@@ -367,3 +367,24 @@ GET request: http://localhost:3001/api/estimations/getEstimationsByUserId/2(:use
 
 GET request: http://localhost:3001/api/estimations/deleteEstimationById/2(:userid)
 
+22. GET DEV EFFORTS BY ESTIMATION ID
+GET request: http://localhost:3001/api/estimations/getDevEffortsById/3(:estimation_id)
+
+
+23. GET PHASES DATA BY ESTIMATION ID
+GET request: http://localhost:3001/api/phases/getPhasesByEstimationId/3(:estimation_id)
+
+24. GET SCHEDULE DATA BY ESTIMATION ID 
+GET request: http://localhost:3001/api/proposedschedule/getProposedScheduleByEstnId/3(:estimation_id)
+
+25. INSERT & UPDATE ESTIMATION STATUS WITH REMARK
+POST request: http://localhost:3001/api/costing/insertEstimationStatus
+POST request: http://localhost:3001/api/costing/updateEstimationStatus
+
+Parameters: {
+	estimation_id:1,
+	status:Approved,
+	remark: Whatever Remark wanted to add,
+	prepared_by:CI9807,
+	reviewed_by:CI1124
+}
