@@ -14,7 +14,11 @@ getAllPhases = async(req) => {
 getPhasesByEstimationId = async(req) => {
     try {
         const [rows] = await pool.execute('SELECT * FROM estimation_project_phases WHERE estimation_id =' + req.estimation_id);
-        return rows; // Return true if users successfully
+        const phasesData = {
+            estimation_id: req.estimation_id,
+            phases: rows
+        }
+        return phasesData; // Return true if users successfully
     } catch (error) {
         throw error; // Re-throw for handling in the controller
     }

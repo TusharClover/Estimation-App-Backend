@@ -9,7 +9,7 @@ const login = async(req) => {
     // console.log(user, "inside model");
 
     try {
-        const [rows] = await pool.execute('SELECT id,employee_id,employee_name,employee_grade FROM users WHERE employee_id="' + user.username + '" AND password="' + user.password + '"');
+        const [rows] = await pool.execute('SELECT id,employee_id,employee_name,employee_grade,role_id FROM users WHERE employee_id="' + user.username + '" AND password="' + user.password + '"');
         // console.log(rows);
         if (rows.length > 0) {
             // console.log("true");
@@ -34,7 +34,7 @@ const login = async(req) => {
 
 getAllReviewers = async(req) => {
     try {
-        const [rows] = await pool.execute('SELECT id,employee_id,employee_name,employee_grade FROM users WHERE employee_grade="M4"');
+        const [rows] = await pool.execute('SELECT id,employee_id,employee_name,employee_grade FROM users WHERE role_id="2"');
         return rows; // Return true if users successfully
     } catch (error) {
         throw error; // Re-throw for handling in the controller

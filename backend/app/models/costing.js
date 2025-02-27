@@ -66,4 +66,13 @@ getCostingById = async(req) => {
 };
 
 
-module.exports = { createCosting, getCostingById };
+insertEstimationStatus = async(req) => {
+    try {
+        const [rows] = await pool.execute('INSERT INTO estimation_status (estimation_id,status,remark,prepared_by,reviewed_by) VALUES (' + req.estimation_id + ',"' + req.status + '","' + req.remark + '",' + req.prepared_by + ',' + req.reviewed_by + ')');
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+module.exports = { createCosting, getCostingById, insertEstimationStatus };

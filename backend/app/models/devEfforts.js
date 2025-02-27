@@ -49,7 +49,11 @@ getDevEffortsById = async(req) => {
     let id = req.id;
     try {
         const [rows] = await pool.execute('SELECT * FROM development_efforts WHERE estimation_id = ' + id);
-        return rows; // Return true if users successfully
+        let effortsData = {
+            estimation_id: id,
+            tasks: rows
+        }
+        return effortsData; // Return true if users successfully
     } catch (error) {
         throw error; // Re-throw for handling in the controller
     }

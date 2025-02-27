@@ -121,7 +121,14 @@ getProposedScheduleByEstnId = async(req) => {
         schedulesWithWeeks.sort((a, b) => a.schedule_order - b.schedule_order);
 
         // Return the schedules with the mapped and sorted weeks data
-        return schedulesWithWeeks;
+        //return schedulesWithWeeks;
+
+        let scheduleData = {
+            estimation_id: req.id,
+            schedule: schedulesWithWeeks
+        }
+
+        return scheduleData;
     } catch (error) {
         throw error; // Re-throw for handling in the controller
     }

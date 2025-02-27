@@ -14,9 +14,20 @@ createEstimation = async(req) => {
 getEstimationsByUserId = async(req) => {
     // console.log(req, "request params");
     let user_id = req.id;
+    let role_id = req.role_id;
     try {
-        const [rows] = await pool.execute('SELECT * FROM estimations WHERE userid = ' + user_id + ' ORDER BY id DESC');
-        return rows; // Return true if users successfully
+        if (role_id = 1) {
+            const [rows] = await pool.execute(`SELECT DISTINCT e.* 
+                FROM estimations e
+                INNER JOIN estimation_proposed_schedules eps ON e.id = eps.estimation_id
+                WHERE e.userid = ${user_id} 
+                ORDER BY e.id DESC;`);
+            return rows; // Return true if users successfully
+        } {
+            const [rows] = await pool.execute(`SELECT DISTINCT e.*, es.status FROM estimations e INNER JOIN estimation_proposed_schedules eps ON e.id = eps.estimation_id LEFT JOIN estimation_status es ON e.id = es.estimation_id WHERE e.reviewed_by = ${user_id} ORDER BY e.id DESC;`);
+            return rows; // Return true if users successfully
+        }
+
     } catch (error) {
         throw error; // Re-throw for handling in the controller
     }
