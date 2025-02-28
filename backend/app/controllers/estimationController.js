@@ -74,7 +74,7 @@ const createEstimation = async(req, res) => {
 
 
 const getEstimationsByUserId = async(req, res) => {
-    // console.log(req, res);
+    console.log(req.body, res);
     const header = req.headers['authorization'];
     if (header) {
         const headersArr = header.split(',');
@@ -98,7 +98,7 @@ const getEstimationsByUserId = async(req, res) => {
                 return res.status(404).send({ error: 'User is not authenticated' });
             }
 
-            const result = await Estimations.getEstimationsByUserId(req.params);
+            const result = await Estimations.getEstimationsByUserId(req.body);
             if (result) {
                 // logger.info('Estimation fetch successfully!');
                 res.status(200).send({ message: 'Estimation fetch successfully!', result: result, success: true });
@@ -125,7 +125,7 @@ const getEstimationsByUserId = async(req, res) => {
 
                     // console.log(authData);
 
-                    const result = await Estimations.getEstimationsByUserId(req.params);
+                    const result = await Estimations.getEstimationsByUserId(req.body);
 
                     // console.log(result);
 

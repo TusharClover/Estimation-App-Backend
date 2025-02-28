@@ -4,7 +4,7 @@ const { createEstimation, getEstimationsByUserId, getEstimationsById, updateEsti
 const router = express.Router();
 
 router.post('/createEstimation', createEstimation);
-router.get('/getEstimationsByUserId/:id', getEstimationsByUserId);
+router.post('/getEstimationsByUserId', getEstimationsByUserId);
 router.get('/getEstimationsById/:id', getEstimationsById);
 router.put('/updateEstimationById', updateEstimationById);
 router.get('/getEstimationsByUserId/:id', getEstimationByUserId);
