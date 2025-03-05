@@ -29,8 +29,7 @@ FROM estimations e
 INNER JOIN estimation_proposed_schedules eps ON e.id = eps.estimation_id 
 LEFT JOIN estimation_status es ON e.id = es.estimation_id 
 WHERE e.reviewed_by = (SELECT employee_id FROM users WHERE id = ${user_id}) 
-ORDER BY e.id DESC;
-`);
+ORDER BY e.id DESC;`);
             return rows; // Return true if users successfully
         }
 
