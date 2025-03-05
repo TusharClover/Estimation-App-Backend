@@ -17,9 +17,10 @@ getEstimationsByUserId = async(req) => {
     let role_id = req.role_id;
     try {
         if (role_id == 1) {
-            const [rows] = await pool.execute(`SELECT DISTINCT e.* 
+            const [rows] = await pool.execute(`SELECT DISTINCT e.*,es.status 
                 FROM estimations e
                 INNER JOIN estimation_proposed_schedules eps ON e.id = eps.estimation_id
+                LEFT JOIN estimation_status es ON e.id = es.estimation_id 
                 WHERE e.userid = ${user_id} 
                 ORDER BY e.id DESC;`);
             return rows; // Return true if users successfully
