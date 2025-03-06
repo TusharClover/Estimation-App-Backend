@@ -158,6 +158,7 @@ const getCostingById = async(req, res) => {
 const insertEstimationStatus = async(req, res) => {
 
     const header = req.headers['authorization'];
+    console.log(req, res);
 
     if (header) {
 
@@ -249,7 +250,7 @@ const updateEstimationStatus = async(req, res) => {
             // If verification succeeds, proceed to get employees
             const result = await Costing.updateEstimationStatus(req.body);
             if (result) {
-                return res.status(200).send({ message: 'Estimation status updated successfully!', result: result.insertId, success: true });
+                return res.status(200).send({ message: 'Estimation status updated successfully!', result: true, success: true });
             } else {
                 return res.status(200).send({ error: 'Something went wrong, please check data properly', result: 0, success: false });
             }
@@ -270,7 +271,7 @@ const updateEstimationStatus = async(req, res) => {
 
                     const result = await Costing.updateEstimationStatus(req.body);
                     if (result) {
-                        return res.status(200).send({ message: 'Estimation status updated successfully!', result: result.insertId ? true : false, success: true });
+                        return res.status(200).send({ message: 'Estimation status updated successfully!', result: true, success: true });
                     } else {
                         console.log(result);
                         return res.status(200).send({ error: 'Something went wrong, please check data properly', result: false, success: false });
