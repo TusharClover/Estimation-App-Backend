@@ -93,17 +93,22 @@ getProposedScheduleByEstnId = async(req) => {
     try {
         // Step 1: Fetch proposed schedules based on estimation_id
         const proposedSchedulesQuery = `
-            SELECT * FROM estimation_proposed_schedules 
-            WHERE estimation_id = ?;
-        `;
+            SELECT eps.*, e.number_of_days  
+FROM estimation_proposed_schedules eps  
+INNER JOIN estimations e ON eps.estimation_id = e.id  
+WHERE e.id = ?`;
         const [proposedSchedules] = await pool.execute(proposedSchedulesQuery, [req.id]);
 
         // Step 2: Fetch the associated weeks for each proposed schedule
+        // console.log(proposedSchedules);
+
         const weeksQuery = `
             SELECT * FROM weeks 
             WHERE estimation_id = ?;
         `;
         const [weeks] = await pool.execute(weeksQuery, [req.id]);
+
+        // console.log(weeks);
 
 
         // Step 3: Map the weeks data to the respective proposed schedule
@@ -124,15 +129,11 @@ getProposedScheduleByEstnId = async(req) => {
 
         // Return the schedules with the mapped and sorted weeks data
         //return schedulesWithWeeks;
-        const numberOfDaysQuery = `SELECT number_of_days FROM estimations WHERE estimation_id = ?;`;
-
-        const numberOfDays = await pool.execute(numberOfDaysQuery, [req.id]);
-
 
         let scheduleData = {
             estimation_id: req.id,
             schedule: schedulesWithWeeks,
-            numberOfDays: numberOfDays
+            // numberOfDays: numberOfDays
         }
 
         return scheduleData;
