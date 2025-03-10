@@ -42,6 +42,7 @@ createProposedScheduleByEstnId = async(req) => {
 
         const [deletedRows] = await pool.execute('DELETE FROM estimation_proposed_schedules WHERE estimation_id = ' + req.estimation_id);
 
+        const updateDays = await pool.execute('UPDATE estimations SET number_of_days = ' + req.number_of_days + '   WHERE estimation_id = ' + req.estimation_id);
 
         // console.log(rows);
         // console.log(deletedRows);
@@ -104,6 +105,7 @@ getProposedScheduleByEstnId = async(req) => {
         `;
         const [weeks] = await pool.execute(weeksQuery, [req.id]);
 
+
         // Step 3: Map the weeks data to the respective proposed schedule
         const schedulesWithWeeks = proposedSchedules.map(schedule => {
             // Filter the weeks corresponding to the current proposed schedule
@@ -122,10 +124,15 @@ getProposedScheduleByEstnId = async(req) => {
 
         // Return the schedules with the mapped and sorted weeks data
         //return schedulesWithWeeks;
+        const numberOfDaysQuery = `SELECT number_of_days FROM estimations WHERE estimation_id = ?;`;
+
+        const numberOfDays = await pool.execute(numberOfDaysQuery, [req.id]);
+
 
         let scheduleData = {
             estimation_id: req.id,
-            schedule: schedulesWithWeeks
+            schedule: schedulesWithWeeks,
+            numberOfDays: numberOfDays
         }
 
         return scheduleData;
